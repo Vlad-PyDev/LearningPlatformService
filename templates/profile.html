@@ -1,0 +1,32 @@
+<!-- templates/profile.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Профиль | CodeLearn</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <nav>
+            <a href="{{ url_for('index') }}">Задачи</a>
+            <a href="{{ url_for('profile') }}" class="active">Профиль</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+
+        <div class="profile-content">
+            <h1>Профиль: {{ user.login }}</h1>
+            <p>Дата регистрации: {{ user.reg_date }}</p>
+            <p>Решено задач: {{ user.stats|length }}</p>
+
+            <h2>Решения:</h2>
+            <ul>
+                {% for task_id, count in user.stats.items() %}
+                <li>
+                    Задача {{ task_id }}: {{ count }} успешных решений
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

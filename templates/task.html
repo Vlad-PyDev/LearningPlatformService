@@ -1,0 +1,59 @@
+<!-- templates/task.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CodeLearn - {{ task.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <nav>
+            <a href="{{ url_for('index') }}">Назад к задачам</a>
+            <a href="{{ url_for('profile') }}">Профиль</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+
+        <div class="code-editor">
+            <h1>{{ task.title }} ({{ task.category }})</h1>
+            <p>{{ task.description }}</p>
+            <h3>Тесты:</h3>
+            <ul>
+                {% for test in task.tests %}
+                <li>
+                    {% if test.input %}
+                    Вход: <code>{{ test.input }}</code> →
+                    {% endif %}
+                    Ожидается: <code>{{ test.output }}</code>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <form method="POST">
+                <textarea id="code" name="code" placeholder="Введите код">{{ 'def ' + task.title.lower().replace(' ', '_') + ':\n    ' }}</textarea>
+                <button type="submit">Проверить код</button>
+            </form>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            fetch('{{ url_for("task", task_id=task.id) }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams(new FormData(this))
+            })
+            .then(response => response.json())
+            .then(data => {
+                let html = '<h3>Результаты:</h3>';
+                data.forEach(result => {
+                    html += `<div class="${result.success ? 'success' : 'error'}">${result.message}</div>`;
+                });
+                document.getElementById('results').innerHTML = html;
+            });
+        });
+    </script>
+</body>
+</html>

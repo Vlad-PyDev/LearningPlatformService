@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CodeLearn - Задачи</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <nav>
+            <a href="{{ url_for('index') }}" class="active">Задачи</a>
+            <a href="{{ url_for('profile') }}">Профиль</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+
+        {% for category, tasks in categories.items() %}
+        <div class="category-header">{{ category }}</div>
+        <div class="task-grid">
+            {% for task in tasks %}
+            <a href="{{ url_for('task', task_id=task.id) }}" class="task-card">
+                <h2>Задача {{ task.id }}</h2>
+                <p>{{ task.title }}</p>
+                <div>Решено: {{ user.stats.get(task.id, 0) }} раз</div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
